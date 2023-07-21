@@ -5,19 +5,21 @@ class RecipesController < ApplicationController
     def index
         recipes = Recipe.all
         render json: recipes
+        
     end
-    def show
-        recipe =Recipe.find(params[:id])
-        render json: recipe
-    end
+
     def create
-        recipe = Recipe.new(recipe_params)
+        recipe = @user.recipes.create!(recipe_params)
         render json: recipe, status: :created
     end
     private
 
     def recipe_params
-        params.permit(:title, :instructions, :minutes_to_complete, :user_id)
+        params.permit(:title, :instructions, :minutes_to_complete)
+    end
+
+    def logged_in?
+        session[:user_id].present?
     end
 
     def render_unprocessable_entity_response(invalid)
